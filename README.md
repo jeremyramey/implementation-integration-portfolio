@@ -59,6 +59,11 @@ A global organization needed a decentralized rollout for **business travel and m
 - **Commercial impact:** ~$202K gross bookings within ~90 days (trend increasing)
 - **Operational readiness:** Successful first-time SCIM provisioning go-live with launch-day risk managed through rapid cross-functional troubleshooting
 
+#### Linkage Growth (First 90 Days)
+![Linkage Growth — First 90 Days](assets/images/linkage_growth_90_days.png)
+
+*By implementing SCIM roster automation at launch, we eliminated manual provisioning delays, enabling faster user access and materially improving early adoption rates.*
+
 ### Learnings
 - Adoption improves when the value story is tied to **real spend patterns**, not generic benefits.
 - First-time SCIM go-lives succeed when ownership is explicit: **who owns data quality, lifecycle events, and exception handling**.

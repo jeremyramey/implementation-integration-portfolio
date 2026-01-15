@@ -62,6 +62,7 @@ A global organization needed a decentralized rollout for **business travel and m
 #### Adoption & Commercial Impact (First 90 Days)
 
 ![Linkage Growth — First 90 Days](assets/images/linkage_growth_90_days.png)
+
 ![Gross Bookings Growth — First 90 Days](assets/images/gb_growth_90_days.png)
 
 *By implementing SCIM roster automation at launch, we eliminated manual provisioning delays, enabling faster user access and materially improving early adoption rates. Increased executive access to premium transportation options and adjusted meal policy permissions further translated adoption into sustained commercial impact.*

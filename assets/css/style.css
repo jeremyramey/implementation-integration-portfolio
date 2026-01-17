@@ -1,26 +1,15 @@
 :root{
-  /* Background + surfaces (cream/vanilla) */
-  --bg: #fbf6ea;          /* cream vanilla */
-  --header: rgba(255,255,255,.78);
+  /* Cream / Vanilla Badge Theme */
+  --bg: #f6f1e8;            /* cream vanilla */
   --card: #ffffff;
-
-  /* Text */
   --text: #1f2937;
   --muted: #6b7280;
-
-  /* Borders + shadows */
-  --border: #e7dfcf;      /* warmer border */
-  --shadow: 0 10px 25px rgba(17,24,39,.07);
+  --border: #e7dfd3;        /* warm border */
+  --shadow: 0 10px 25px rgba(0,0,0,.06);
   --radius: 18px;
-
-  /* Accent */
-  --accent: #111827;
-  --chip: #f6f0e0;        /* warm “badge” chip */
-  --chipText: #3a3f4b;
 }
 
 *{ box-sizing: border-box; }
-
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -30,9 +19,8 @@ body{
 
 .page{ max-width: 1100px; margin: 26px auto; padding: 0 18px; }
 
-/* ---------- Header ---------- */
 .header{
-  background: var(--header);
+  background: rgba(255,255,255,.65);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -52,241 +40,8 @@ body{
   border-radius: 999px;
   object-fit: cover;
   border: 3px solid rgba(255,255,255,.9);
-  box-shadow: 0 8px 18px rgba(17,24,39,.10);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
   background: #fff;
 }
 
-.header-meta h1{ margin: 0; font-size: 30px; line-height: 1.1; }
-.subtitle{ margin: 6px 0 10px; color: var(--muted); }
-
-.meta-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 8px; }
-
-.pill{
-  font-size: 12px;
-  color: var(--chipText);
-  background: var(--chip);
-  border: 1px solid var(--border);
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-
-.links{ color: var(--muted); font-size: 14px; }
-.links a{
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(17,24,39,.25);
-}
-.links a:hover{ border-bottom-color: rgba(17,24,39,.6); }
-.dot{ margin: 0 8px; }
-
-.header-actions{ margin-left:auto; display:flex; gap:10px; }
-
-.btn{
-  display:inline-block;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #fff;
-  text-decoration: none;
-  border: 1px solid var(--accent);
-  font-weight: 600;
-  font-size: 14px;
-}
-.btn-ghost{
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--border);
-}
-.btn:hover{ opacity: .92; }
-
-/* ---------- Tabs ---------- */
-.tabs{
-  display:flex;
-  gap: 10px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--border);
-  background: rgba(255,255,255,.86);
-}
-.tab{
-  cursor:pointer;
-  border: 1px solid var(--border);
-  background: #fff;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 600;
-  color: var(--accent);
-}
-.tab.active{
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-/* ---------- Panels ---------- */
-.content{ margin-top: 16px; }
-.panel{ display:none; }
-.panel.active{ display:block; }
-
-.panel-card{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 18px;
-  margin-bottom: 14px;
-}
-
-.panel-card h2{ margin: 0 0 10px; font-size: 24px; }
-.panel-card h3{ margin: 0 0 10px; font-size: 18px; }
-.panel-card h4{
-  margin: 16px 0 8px;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  color: #374151;
-}
-
-.subhead{ color: var(--muted); margin-top: -6px; }
-
-.note{
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-.grid.two{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.inset{
-  background: #fffaf0; /* subtle warm inset */
-  box-shadow: none;
-}
-
-/* ---------- Cards ---------- */
-.cards{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 14px;
-  align-items: stretch;
-}
-
-.card{
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-
-  /* make all cards equal-height stacks */
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.card img{
-  width: 100%;
-  height: 220px;
-
-  /* keep entire image visible; no cropping */
-  object-fit: contain;
-
-  background-color: #f7f2e6;
-  padding: 12px;
-}
-
-/* IMPORTANT: make body a flex column so CTA can sit at bottom */
-.card-body{
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.card-body h3{ margin: 0 0 6px; font-size: 16px; }
-.card-body p{ margin: 0 0 10px; color: var(--muted); font-size: 14px; }
-
-.tags{
-  display:flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.tags span{
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: #fffdf7;
-  color: var(--chipText);
-}
-
-/* ---------- Case Study Link (perfect alignment + no box) ---------- */
-/* Use this on <a class="linklike"> ... </a> */
-.linklike{
-  margin-top: auto;                 /* pins to bottom */
-  display: inline-block;
-  font-size: 0.9rem;
-  font-weight: 500 !important;      /* prevent accidental bold */
-  color: var(--accent);
-  text-decoration: underline;
-  cursor: pointer;
-
-  /* prevent “button box” appearance */
-  background: transparent;
-  border: 0;
-  padding: 0;
-  outline: none;
-  box-shadow: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.linklike:hover{ opacity: 0.75; }
-
-.linklike:focus,
-.linklike:active,
-.linklike:focus-visible{
-  outline: none;
-  box-shadow: none;
-}
-
-/* ---------- Charts / Flows ---------- */
-.chart{
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #fff;
-}
-
-.flow{
-  margin: 0;
-  padding: 14px;
-  border-radius: 14px;
-  background: #fff;
-  border: 1px solid var(--border);
-  overflow:auto;
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.cta{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-
-.footer{
-  margin: 18px 4px 30px;
-  color: var(--muted);
-  font-size: 13px;
-  text-align: center;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 900px){
-  .cards{ grid-template-columns: 1fr; }
-  .grid.two{ grid-template-columns: 1fr; }
-  .header-inner{ flex-direction: column; align-items: flex-start; }
-  .header-actions{ margin-left: 0; }
-}
+.header-meta

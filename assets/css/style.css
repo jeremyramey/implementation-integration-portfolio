@@ -179,17 +179,19 @@ body{
   color: #374151;
 }
 
-.linklike{
-  margin-top: 10px;
-  border: none;
-  background: transparent;
-  color: #111827;
-  font-weight: 700;
+.linklike {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-weight: 500; /* NOT bold */
+  color: #1f2937; /* neutral dark */
+  text-decoration: underline;
   cursor: pointer;
-  padding: 0;
-  border-bottom: 1px solid rgba(17,24,39,.25);
 }
-.linklike:hover{ border-bottom-color: rgba(17,24,39,.6); }
+
+.linklike:hover {
+  opacity: 0.75;
+}
 
 .chart{
   width: 100%;

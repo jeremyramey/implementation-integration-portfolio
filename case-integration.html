@@ -1,91 +1,74 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Case Study | Expense Integration Rollout</title>
-  <meta name="description" content="Case study: Expense integration rollout focusing on finance alignment, readiness/testing, and reconciliation outcomes." />
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body>
-  <div class="page">
+<!-- HERO CASE STUDY -->
+<div class="panel-card" id="hero-currency">
+  <h2>Hero Case Study — Global Multi-Currency Billing Enablement (CAD & EUR)</h2>
 
-    <header class="header">
-      <div class="header-inner">
-        <img class="avatar" src="assets/images/avatar.jpg" alt="Jeremy Ramey headshot" />
+  <h4>Problem</h4>
+  <p>
+    A global customer relied on a centralized Uber One membership spanning multiple regions. After adopting a new accounting and payment
+    platform, the system could no longer convert invoice currency automatically for recurring global membership charges.
+  </p>
+  <p>
+    While no systems were technically broken, the limitation introduced significant risk: invoices could not be paid correctly, the
+    account fell six months behind, and the balance was approaching charge-off — placing a long-standing global partnership at risk.
+  </p>
 
-        <div class="header-meta">
-          <h1>Jeremy Ramey</h1>
-          <p class="subtitle">Implementation | Integrations | Customer Success (Non-Engineering Portfolio)</p>
+  <h4>Stakeholders Impacted</h4>
+  <ul>
+    <li>Customer Finance &amp; Accounting</li>
+    <li>Internal Finance (charge-off and recovery risk)</li>
+    <li>Product &amp; Engineering</li>
+    <li>Account Leadership</li>
+    <li>End Users (risk of benefit disruption)</li>
+  </ul>
 
-          <div class="meta-row">
-            <span class="pill">Integrations</span>
-            <span class="pill">Finance Ops</span>
-            <span class="pill">Reconciliation</span>
-          </div>
+  <h4>Environment &amp; Constraints</h4>
+  <ul>
+    <li><strong>Program:</strong> Centralized global Uber One membership</li>
+    <li><strong>Regions:</strong> CAD and EUR dashboards with thousands of users</li>
+    <li><strong>Platform constraints:</strong> Currency could not be changed post-creation; pricing logic varied by country</li>
+    <li><strong>Time pressure:</strong> Charge-off deadline approaching the following month</li>
+  </ul>
 
-          <div class="links">
-            <a href="index.html">Portfolio</a>
-            <span class="dot">•</span>
-            <a href="assets/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
-            <span class="dot">•</span>
-            <a href="mailto:jsr110187@gmail.com">Email</a>
-          </div>
-        </div>
+  <h4>Actions</h4>
+  <ul>
+    <li>Partnered with the Uber One product team to confirm currency limitations and pricing dependencies</li>
+    <li>Reframed the problem by exploring currency enablement at dashboard creation rather than modifying live environments</li>
+    <li>Designed a workaround using new shell dashboards with currency locked at creation and country logic validated afterward</li>
+    <li>Secured Finance alignment to temporarily waive charge-off while testing the solution</li>
+    <li>Validated pricing and invoicing using test users in each region</li>
+    <li>
+      Protected the end-user experience by manually transferring users between dashboards, avoiding automated cancellation
+      notifications that would have caused confusion, re-enrollment, and support escalations
+    </li>
+  </ul>
 
-        <div class="header-actions">
-          <a class="btn btn-ghost" href="index.html#projects">← Go back</a>
-          <a class="btn" href="mailto:jsr110187@gmail.com">Message</a>
-        </div>
-      </div>
-    </header>
+  <h4>Technical Components (High-Level)</h4>
+  <ul>
+    <li>Currency enablement at dashboard creation</li>
+    <li>Country and language decoupling for validation</li>
+    <li>Manual user transfer workflows</li>
+    <li>Billing dashboard verification</li>
+    <li>Cross-functional coordination with Product, Engineering, and Finance</li>
+  </ul>
 
-    <main class="content">
-      <div class="panel-card">
-        <h2>Case Study — Expense Integration Rollout</h2>
-        <p class="subhead">Finance alignment, integration readiness/testing, and post-launch reconciliation monitoring.</p>
-        <p class="note">All content included here is sanitized, anonymized, and non-confidential.</p>
+  <h4>Outcomes (Sanitized)</h4>
+  <ul>
+    <li>Multi-currency billing enabled for CAD and EUR dashboards — previously believed to be unsupported</li>
+    <li>6,000+ CAD users and 2,000+ EUR users retained without service interruption</li>
+    <li>No employee-facing cancellation notifications triggered during migration</li>
+    <li>Charge-off avoided and outstanding balance recovered</li>
+    <li>Over $340K in annual program value preserved, with continued growth upside</li>
+  </ul>
 
-        <h4>Problem</h4>
-        <p>
-          Finance teams needed clean expense reconciliation and fewer manual workflows. The primary risk was misalignment on what “done” meant
-          (technical completion vs. operational reconciliation accuracy).
-        </p>
+  <h4>Key Learnings</h4>
+  <ul>
+    <li>Platform constraints often require re-framing the system, not rebuilding it</li>
+    <li>Finance partnership is critical when technical solutions require temporary risk tolerance</li>
+    <li>Protecting the employee experience is as important as solving the financial problem</li>
+  </ul>
 
-        <h4>What I Did</h4>
-        <ul>
-          <li><strong>Aligned finance stakeholders on success criteria:</strong> defined what correct reporting/reconciliation should look like post-launch.</li>
-          <li><strong>Coordinated integration readiness:</strong> confirmed data requirements, ownership, and testing approach with cross-functional partners.</li>
-          <li><strong>Supported testing and validation:</strong> validated end-to-end flows and documented outcomes/edge cases for go-live confidence.</li>
-          <li><strong>Monitored post-launch reconciliation:</strong> tracked early signals, identified exceptions, and drove corrective actions quickly.</li>
-        </ul>
-
-        <h4>Outcome</h4>
-        <ul>
-          <li>Improved reconciliation clarity and reduced post-launch confusion.</li>
-          <li>Reduced manual follow-ups by documenting ownership and exception paths.</li>
-        </ul>
-
-        <h4>Learning</h4>
-        <ul>
-          <li>Integrations succeed when finance definitions (what “correct” looks like) are locked before technical testing starts.</li>
-        </ul>
-
-        <div class="cta">
-          <a class="btn btn-ghost" href="index.html#projects">← Go back</a>
-          <a class="btn" href="mailto:jsr110187@gmail.com">Contact</a>
-        </div>
-      </div>
-    </main>
-
-    <footer class="footer">
-      <span>© <span id="year"></span> Jeremy Ramey • Recruiter-ready implementation portfolio</span>
-    </footer>
-
+  <div class="cta">
+    <a class="btn btn-ghost" href="index.html#projects">← Go back</a>
+    <a class="btn" href="mailto:jsr110187@gmail.com">Contact</a>
   </div>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-</body>
-</html>
+</div>

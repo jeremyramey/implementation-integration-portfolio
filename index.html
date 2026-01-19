@@ -7,6 +7,7 @@
   <meta name="description" content="Implementation & Integration portfolio — enterprise onboarding, integrations, and adoption outcomes." />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
+
 <body>
   <div class="page">
 
@@ -17,14 +18,10 @@
         <div class="header-meta">
           <h1>Jeremy Ramey</h1>
 
-          <!-- Updated subtitle + non-engineering label (keeps your existing styling) -->
           <div class="subtitle">
             Customer Onboarding, Integrations &amp; Implementations
             <span class="subtitle-muted">(Non-Engineering Portfolio)</span>
           </div>
-
-          <!-- Removed location / formerly / visible email line -->
-          <!-- (Meta-list block intentionally deleted) -->
 
           <div class="links">
             <a href="https://www.linkedin.com/in/jeremy-r-a57b98ab/" target="_blank" rel="noreferrer">LinkedIn</a>
@@ -42,17 +39,17 @@
       </div>
 
       <nav class="tabs" aria-label="Portfolio sections">
-  <button type="button" class="tab" data-tab="overview">Overview</button>
-  <button type="button" class="tab" data-tab="projects">Projects</button>
-  <button type="button" class="tab" data-tab="about">About</button>
-  <button type="button" class="tab" data-tab="contact">Contact</button>
-</nav>
+        <button type="button" class="tab" data-tab="overview">Overview</button>
+        <button type="button" class="tab" data-tab="projects">Projects</button>
+        <button type="button" class="tab" data-tab="about">About</button>
+        <button type="button" class="tab" data-tab="contact">Contact</button>
+      </nav>
     </header>
 
     <main class="content">
 
       <!-- OVERVIEW -->
-<section class="panel active" id="overview">
+      <section class="panel" id="overview">
         <div class="panel-card">
           <div class="section-title">
             <h2>Overview</h2>
@@ -115,7 +112,6 @@
                 <span class="tag">Client Success</span>
                 <span class="tag">Storytelling</span>
               </div>
-              <!-- optional: keep blank or add later -->
             </div>
           </article>
         </div>
@@ -188,11 +184,7 @@
     <div class="footer">© <span id="year"></span> Jeremy Ramey</div>
   </div>
 
-  <!-- Keeps the year current (safe even if you already have it elsewhere) -->
-  <script>
-    var y = document.getElementById("year");
-    if (y) y.textContent = new Date().getFullYear();
-<script src="assets/js/main.js"></script>
+  <!-- Your existing JS handles tabs + sets year; keep this LAST -->
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
-

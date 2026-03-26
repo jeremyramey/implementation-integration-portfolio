@@ -1,4 +1,4 @@
-# Jeremy Ramey  
+# Scott Ramey  
 **Implementation | Integrations | Customer Success (Non-Engineering Portfolio)**
 
 [LinkedIn](https://www.linkedin.com/in/jeremy-r-a57b98ab/) •  

@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Case Study | Enterprise API Integration — Diagnostic & Recovery</title>
+  <meta name="description" content="Case study: Enterprise API integration failure — diagnostic, recovery, and data backfill." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Supplemental styles for custom components only -->
+  <style>
+    .case-meta {
+      font-size: 0.8rem;
+      color: #999;
+      font-style: italic;
+      margin-bottom: 2rem;
+      border-left: 3px solid #e5e7eb;
+      padding-left: 0.75rem;
+    }
+
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+    }
+    .callout-red   { background: #fef2f2; border-left: 4px solid #ef4444; }
+    .callout-green { background: #f0fdf4; border-left: 4px solid #22c55e; }
+    .callout-blue  { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .callout-amber { background: #fffbeb; border-left: 4px solid #f59e0b; }
+    .callout strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .callout-red   strong { color: #ef4444; }
+    .callout-green strong { color: #16a34a; }
+    .callout-blue  strong { color: #2563eb; }
+    .callout-amber strong { color: #b45309; }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      white-space: pre;
+    }
+    .code-block .ok      { color: #4ade80; }
+    .code-block .err     { color: #f87171; }
+    .code-block .key     { color: #93c5fd; }
+    .code-block .val     { color: #a5f3fc; }
+    .code-block .comment { color: #64748b; font-style: italic; }
+
+    .ladder {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1rem 0 1.5rem;
+    }
+    .ladder-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.875rem;
+    }
+    .ladder-step:last-child { border-bottom: none; }
+    .ladder-step.resolved   { background: #f0fdf4; }
+    .step-num {
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: #fff;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .step-num.green { background: #16a34a; }
+    .step-content strong { display: block; margin-bottom: 0.1rem; }
+    .step-verdict { font-size: 0.75rem; font-weight: 600; margin-top: 0.2rem; }
+    .step-verdict.fail { color: #ef4444; }
+    .step-verdict.fix  { color: #2563eb; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+    .col-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+    .col-card h5 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+    .col-card.dark { background: #0f172a; color: #e2e8f0; border-color: #1e293b; }
+    .col-card.dark h5 { color: #94a3b8; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 520px) { .metrics { grid-template-columns: 1fr 1fr; } }
+    .metric-card {
+      text-align: center;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem 0.75rem;
+    }
+    .metric-card .num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2563eb;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .metric-card .label { font-size: 0.72rem; color: #666; line-height: 1.3; }
+
+    .timeline { margin: 1rem 0 1.5rem; }
+    .tl-item {
+      display: flex;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      position: relative;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 9px; top: 24px; bottom: 0;
+      width: 2px;
+      background: #e5e7eb;
+    }
+    .tl-item:last-child::before { display: none; }
+    .tl-dot {
+      width: 20px; height: 20px; min-width: 20px;
+      border-radius: 50%;
+      background: #2563eb;
+      margin-top: 2px;
+    }
+    .tl-dot.gray { background: #9ca3af; }
+    .tl-body { font-size: 0.875rem; }
+    .tl-body strong { display: block; font-size: 0.8rem; }
+    .tl-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .say-this {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 1.1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.875rem;
+    }
+    .say-this .say-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #94a3b8;
+      margin-bottom: 0.4rem;
+    }
+    .say-this p { font-style: italic; margin: 0; line-height: 1.6; color: #cbd5e1; }
+
+    .payload-label { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .payload-label.ok  { color: #16a34a; }
+    .payload-label.err { color: #ef4444; }
+
+    code {
+      background: #f1f5f9;
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-family: "SF Mono", Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="header">
+      <div class="header-inner">
+        <img class="avatar" src="assets/images/avatar.jpg" alt="Scott Ramey headshot" />
+        <div class="header-meta">
+          <h1>Scott Ramey</h1>
+          <p class="subtitle">Implementation | Integrations | Customer Success (Non-Engineering Portfolio)</p>
+          <div class="meta-row">
+            <span class="pill">API Troubleshooting</span>
+            <span class="pill">Integration Recovery</span>
+            <span class="pill">Data Validation</span>
+          </div>
+          <div class="links">
+            <a href="index.html">Portfolio</a>
+            <span class="dot">•</span>
+            <a href="assets/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <span class="dot">•</span>
+            <a href="mailto:JRamey.Tech@outlook.com">Email</a>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a class="btn btn-ghost" href="index.html#projects">← Go back</a>
+          <a class="btn" href="mailto:JRamey.Tech@outlook.com">Message</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="panel-card">
+
+        <h2>Case Study — Enterprise API Integration: Diagnostic &amp; Recovery</h2>
+        <p class="case-meta">
+          All content is sanitized and anonymized. Platform names and user counts have been generalized.
+          Technical methodology and diagnostic approach reflect real execution.
+        </p>
+
+        <hr />
+
+        <h4>Problem</h4>
+        <p>
+          Four days after go-live, a large enterprise customer flagged that new employees were not appearing
+          in their platform dashboards and e-receipt data from their expense system had stopped flowing.
+          The integration had been live and clean for 96 hours — this was not a configuration issue from setup.
+          Something had changed.
+        </p>
+        <p>
+          With 173,000+ end users across a multi-org structure, a silent data gap carried real risk: employees
+          blocked from platform access, expense records incomplete, and a customer who had just gone live now
+          questioning whether the integration was stable.
+        </p>
+
+        <div class="callout callout-red">
+          <strong>Initial Customer Report</strong>
+          "Three new hires from this week aren't showing up in the dashboard. And we're not seeing any
+          e-receipts come through since Tuesday morning."
+        </div>
+
+        <hr />
+
+        <h4>Diagnostic Approach — Work Top to Bottom</h4>
+        <p>The first rule: don't touch anything until you know where the break is. Three questions before moving:</p>
+        <ul>
+          <li><strong>What specifically is wrong?</strong> — Employees missing from dashboard. E-receipts not flowing.</li>
+          <li><strong>When did it start?</strong> — Tuesday morning. Not day one. Something changed after go-live.</li>
+          <li><strong>Isolated or widespread?</strong> — All new hires affected. All e-receipts affected. Systemic, not one-off.</li>
+        </ul>
+        <p>Systemic + post-go-live onset = integration layer, not configuration. Pulled the sync log first.</p>
+
+        <h4>Step 1 — Read the Sync Log</h4>
+
+        <div class="code-block">// Sync Log — Expense Platform Roster Integration
+
+<span class="key">Last sync:</span>   <span class="err">Tue Mar 18 — 3:14 AM  ✗ FAILED</span>
+<span class="key">Previous:</span>    <span class="ok">Mon Mar 17 — 3:11 AM  ✓ SUCCESS</span>
+<span class="key">Status:</span>      <span class="err">Authentication Error</span>
+<span class="key">Records:</span>     <span class="err">Processed: 0 | Errors: 1</span>
+<span class="key">Error:</span>       <span class="err">401 Unauthorized — Token expired</span>
+
+// E-receipt forwarding log
+<span class="key">Last event:</span>  <span class="err">Tue Mar 18 — 2:58 AM  ✗ FAILED</span>
+<span class="key">Error:</span>       <span class="err">403 Forbidden — Insufficient permissions</span></div>
+
+        <div class="callout callout-blue">
+          <strong>What This Told Me</strong>
+          Two separate failures, same timestamp window. The roster sync hit a 401 (expired token) — re-auth needed,
+          no engineering required. The e-receipt stream hit a 403 (valid credentials, wrong permissions) — different
+          root cause. Both are fixable without escalation if I sequence them right.
+        </div>
+
+        <h4>Step 2 — Work the Diagnostic Ladder</h4>
+
+        <div class="ladder">
+          <div class="ladder-step resolved">
+            <div class="step-num green">1</div>
+            <div class="step-content">
+              <strong>Is the connection live?</strong>
+              Checked all integration connections. Roster sync: red. E-receipt forwarding: red. Both dropped at the same time window Tuesday.
+              <div class="step-verdict fail">✗ Connection down — authentication failure</div>
+            </div>
+          </div>
+          <div class="ladder-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>When did data last sync successfully?</strong>
+              Last clean roster sync: Monday 3:11 AM. Last clean e-receipt event: Monday night. Gap of ~27 hours by the time customer reported.
+              <div class="step-verdict fail">✗ Abnormal gap — not a delay, a failure</div>
+            </div>
+          </div>
+          <div class="ladder-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Is data present but in the wrong place?</strong>
+              No — data wasn't arriving at all. Not a mapping issue. Source confirmed healthy: new hires existed in the expense system.
+              <div class="step-verdict fail">✗ Data not arriving — API or ingestion layer</div>
+            </div>
+          </div>
+          <div class="ladder-step resolved">
+            <div class="step-num green">4</div>
+            <div class="step-content">
+              <strong>Root cause isolated</strong>
+              Roster: expired access token (401). E-receipt: permission scope stripped during a credentials rotation the customer's IT team ran Monday night — they didn't flag it.
+              <div class="step-verdict fix">→ Fix identified. Both resolvable without engineering.</div>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <h4>Step 3 — Validate With a Sample Payload</h4>
+        <p>
+          Before touching anything, I pulled a sample API response from the last failed sync to confirm
+          what was actually being sent — and where it was breaking. Four fields to check every time.
+        </p>
+
+        <div class="two-col">
+          <div>
+            <p class="payload-label ok">✓ Last Healthy Payload (Mon)</p>
+            <div class="code-block">{
+  <span class="key">"employee_id"</span>: <span class="val">"EMP-774821"</span>,
+  <span class="key">"email"</span>: <span class="val">"j.chen@corp.com"</span>,
+  <span class="key">"org_unit"</span>: <span class="val">"US-West"</span>,
+  <span class="key">"status"</span>: <span class="val">"active"</span>,
+  <span class="key">"timestamp"</span>: <span class="val">"2026-03-17T03:11:42Z"</span>
+}</div>
+          </div>
+          <div>
+            <p class="payload-label err">✗ Failed Payload (Tue)</p>
+            <div class="code-block">{
+  <span class="err">"error"</span>: <span class="val">"401 Unauthorized"</span>,
+  <span class="err">"message"</span>: <span class="val">"Access token expired"</span>,
+  <span class="err">"token_expiry"</span>: <span class="val">"2026-03-17T23:59:59Z"</span>,
+  <span class="err">"records_processed"</span>: <span class="val">0</span>,
+  <span class="key">"timestamp"</span>: <span class="val">"2026-03-18T03:14:01Z"</span>
+}</div>
+          </div>
+        </div>
+
+        <div class="callout callout-amber">
+          <strong>What the Payload Showed</strong>
+          The token had a hard expiry at 11:59 PM Monday — exactly matching the failure window. The employee
+          data structure was intact and correct on the last healthy sync. No data corruption, no mapping issue.
+          Pure auth failure. Re-authenticate and reprocess.
+        </div>
+
+        <h4>Step 4 — Separate Issue: E-Receipt Permission Scope</h4>
+        <p>
+          The e-receipt 403 was a different problem. The credentials were valid — the integration could
+          authenticate — but the permission scope had been narrowed. When the customer's IT team rotated
+          credentials Monday night, they re-issued a token without the <code>receipt.read</code> scope attached.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0;">
+          <div style="background:#0f172a; color:#e2e8f0; border:1px solid #1e293b; border-radius:8px; padding:1rem; font-size:0.875rem;">
+            <h5 style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:0.5rem;">Original Token Scope</h5>
+            <ul style="padding-left:1.25rem; margin:0;">
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> roster.read</li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> roster.write</li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> receipt.read</li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> org.read</li>
+            </ul>
+          </div>
+          <div style="background:#0f172a; color:#e2e8f0; border:1px solid #1e293b; border-radius:8px; padding:1rem; font-size:0.875rem;">
+            <h5 style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:0.5rem;">Rotated Token Scope</h5>
+            <ul style="padding-left:1.25rem; margin:0;">
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> roster.read</li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> roster.write</li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#f87171">✗</span> receipt.read <span style="color:#f87171; font-size:0.7rem;">(stripped)</span></li>
+              <li style="margin-bottom:0.3rem;"><span style="color:#4ade80">✓</span> org.read</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout callout-blue">
+          <strong>Key Distinction</strong>
+          A 401 = identity problem (who are you?). A 403 = permission problem (you're authenticated but not allowed).
+          These require different fixes. Conflating them wastes time and creates customer confusion.
+        </div>
+
+        <hr />
+
+        <h4>Escalation Decision</h4>
+        <p>Before touching anything, I made a clear call on what I owned vs. what engineering needed to own.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0;">
+          <div style="border:1px solid #16a34a; border-radius:8px; padding:1rem; font-size:0.875rem;">
+            <h5 style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#16a34a; margin-bottom:0.5rem;">I Fix — No Engineering</h5>
+            <ul style="padding-left:1.25rem; margin:0;">
+              <li style="margin-bottom:0.3rem;">Re-authenticate roster sync (new token)</li>
+              <li style="margin-bottom:0.3rem;">Walk customer IT through re-issuing token with correct permission scope</li>
+              <li style="margin-bottom:0.3rem;">Verify connection status after each fix</li>
+              <li style="margin-bottom:0.3rem;">Request backfill of missed sync window</li>
+              <li style="margin-bottom:0.3rem;">Set proactive token expiry reminder</li>
+            </ul>
+          </div>
+          <div style="border:1px solid #ef4444; border-radius:8px; padding:1rem; font-size:0.875rem;">
+            <h5 style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#ef4444; margin-bottom:0.5rem;">Escalate to Engineering If</h5>
+            <ul style="padding-left:1.25rem; margin:0;">
+              <li style="margin-bottom:0.3rem;">Re-auth successful but data still not flowing</li>
+              <li style="margin-bottom:0.3rem;">Correct permission scope confirmed but 403 persists</li>
+              <li style="margin-bottom:0.3rem;">Records arriving but employees landing in wrong org</li>
+              <li style="margin-bottom:0.3rem;">Backfill requested but historical data not reprocessing</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="say-this">
+          <div class="say-label">Message to Engineering (Template Used)</div>
+          <p>
+            "Hey — working on an integration where roster sync dropped with a 401 (token expired) and e-receipt
+            forwarding hit a 403 (permission scope stripped during a credentials rotation). I've re-authenticated
+            the roster connection and confirmed it's syncing cleanly. The 403 is resolved on the customer side —
+            IT re-issued the token with receipt.read included. Both connections are now green. Requesting a backfill
+            for the 27-hour gap (Mar 18 3AM – Mar 19 6AM). Can you confirm and queue?"
+          </p>
+        </div>
+
+        <hr />
+
+        <h4>Resolution &amp; Validation</h4>
+        <p>
+          Both issues were resolved without engineering intervention. Engineering was looped in only for the
+          backfill request — framed with the problem, what had been ruled out, and the specific ask.
+        </p>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-label">Hour 0</div>
+              <strong>Customer reports missing employees and e-receipts</strong>
+              Pulled sync log immediately. Auth failure confirmed within 4 minutes.
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-label">Hour 0.5</div>
+              <strong>Roster sync: re-authenticated</strong>
+              New token issued. Connection tested. Confirmed clean sync cycle within 10 minutes. Communicated status to customer.
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-label">Hour 1.5</div>
+              <strong>E-receipt: permission scope corrected</strong>
+              Walked IT through re-issuing token with full required scopes. Tested event forwarding. Confirmed flowing.
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-label">Hour 2</div>
+              <strong>Backfill requested + data parity check</strong>
+              27-hour gap identified. Engineering queued reprocess. Validated source vs. platform record counts matched after completion.
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot gray"></div>
+            <div class="tl-body">
+              <div class="tl-label">Hour 4</div>
+              <strong>72-hour clean sync window confirmed</strong>
+              All three new hires visible in dashboard. All e-receipts flowing. Zero errors in subsequent sync cycles. Customer confirmed resolution.
+            </div>
+          </div>
+        </div>
+
+        <h4>Customer Communication — Four Beats</h4>
+
+        <div class="callout callout-blue">
+          <strong>Beat 1 — Name the Symptom</strong>
+          "What you're seeing is a sync failure that started Tuesday morning — no new employees are being pulled in
+          and e-receipt forwarding has stopped. This is an authentication issue, not a data problem."
+        </div>
+        <div class="callout callout-blue">
+          <strong>Beat 2 — Explain the Cause</strong>
+          "Your access token expired overnight, which cut off the roster sync. Separately, when IT rotated
+          credentials Monday night, the receipt permission wasn't included in the new token. Two separate causes,
+          both fixable without engineering."
+        </div>
+        <div class="callout callout-blue">
+          <strong>Beat 3 — State the Steps</strong>
+          "I'm re-authenticating the roster connection now. Once that's green, I'll walk your IT team through
+          re-issuing the credential with the correct permission scope. Then I'll request a backfill for the gap window."
+        </div>
+        <div class="callout callout-green">
+          <strong>Beat 4 — Close With the Outcome</strong>
+          "Both connections are confirmed live. Your three new hires are now visible in the dashboard. E-receipts
+          are flowing. The backfill is complete — no records were lost. I've also set a proactive reminder before
+          your next token expiry so this doesn't happen again."
+        </div>
+
+        <hr />
+
+        <h4>Outcomes</h4>
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="num">&lt;2 hrs</div>
+            <div class="label">Full resolution, start to close</div>
+          </div>
+          <div class="metric-card">
+            <div class="num">0</div>
+            <div class="label">Records lost or permanently missing</div>
+          </div>
+          <div class="metric-card">
+            <div class="num">27 hrs</div>
+            <div class="label">Gap window backfilled completely</div>
+          </div>
+          <div class="metric-card">
+            <div class="num">0</div>
+            <div class="label">Engineering escalations required</div>
+          </div>
+          <div class="metric-card">
+            <div class="num">173K+</div>
+            <div class="label">End users protected from disruption</div>
+          </div>
+          <div class="metric-card">
+            <div class="num">72 hrs</div>
+            <div class="label">Clean sync window confirmed post-fix</div>
+          </div>
+        </div>
+
+        <hr />
+
+        <h4>Technical Components</h4>
+        <ul>
+          <li>API authentication — token lifecycle management, expiry handling, re-authentication flow</li>
+          <li>HTTP error code diagnosis — 401 vs. 403 distinction and appropriate response for each</li>
+          <li>Permission scope auditing — reading and comparing OAuth token scopes</li>
+          <li>JSON payload inspection — identifying healthy vs. failed response structure</li>
+          <li>Sync log analysis — reading cadence, status, error type, and records processed</li>
+          <li>Data parity validation — source system vs. platform record count comparison</li>
+          <li>Backfill coordination — gap identification, engineering handoff, confirmation</li>
+          <li>Customer communication — structured four-beat framework throughout investigation</li>
+        </ul>
+
+        <hr />
+
+        <h4>Learnings</h4>
+        <ul>
+          <li><strong>401 and 403 are not the same problem.</strong> Conflating them adds time and confusion. Read the error code first — it tells you exactly where to look.</li>
+          <li><strong>IT credential rotations are a silent risk post-go-live.</strong> Proactively document token expiry dates and required permission scopes at kickoff. Set calendar reminders. Don't wait for a 403.</li>
+          <li><strong>Never go silent during investigation.</strong> A customer who knows you're working the problem doesn't panic. A customer who hears nothing does.</li>
+          <li><strong>Know your lane.</strong> Both issues here were resolvable without engineering. Go to engineering with a problem, what you've ruled out, and the fix you're proposing — not a solved problem.</li>
+        </ul>
+
+        <hr />
+
+        <p style="text-align:center; margin-top: 1.5rem;">
+          <a href="index.html#projects">← Go back</a>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <a href="mailto:JRamey.Tech@outlook.com">Contact</a>
+        </p>
+
+      </div><!-- /.panel-card -->
+    </main>
+
+  </div><!-- /.page -->
+</body>
+</html>

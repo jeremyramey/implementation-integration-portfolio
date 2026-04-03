@@ -163,5 +163,5 @@ Reduced Manual Admin Work
 ## Contact
 If you’re reviewing me for **Implementation Manager, Integration Specialist, or Technical Customer Success** roles, I’d welcome a conversation.
 
-[LinkedIn](https://www.linkedin.com/in/jeremy-r-a57b98ab/) •  
+[LinkedIn](https://www.linkedin.com/in/scott-r-a57b98ab/) •  
 [Email](mailto:jsr110187@gmail.com)

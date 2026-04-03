@@ -1,7 +1,7 @@
 # Scott Ramey  
 **Implementation | Integrations | Customer Success (Non-Engineering Portfolio)**
 
-[LinkedIn](https://www.linkedin.com/in/jeremy-r-a57b98ab/) •  
+[LinkedIn](https://www.linkedin.com/in/scott-r-a57b98ab/) •  
 [Email](mailto:JRamey.Tech@outlook.com) •  
 [Resume](assets/resume.pdf)
 
